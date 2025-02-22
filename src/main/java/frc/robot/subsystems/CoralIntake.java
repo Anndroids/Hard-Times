@@ -17,6 +17,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -46,6 +47,10 @@ public class CoralIntake extends SubsystemBase {
         coralIntakeConfig.MotorOutput
                 .withNeutralMode(NeutralModeValue.Brake)
                 .withInverted(InvertedValue.CounterClockwise_Positive);
+        coralIntakeConfig.HardwareLimitSwitch
+                .withForwardLimitEnable(true)
+                .withForwardLimitRemoteCANrange(canRange)
+                .withForwardLimitType(ForwardLimitTypeValue.NormallyOpen);
 
         coralIntakeMotor.getConfigurator().apply(coralIntakeConfig);
 

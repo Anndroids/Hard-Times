@@ -26,6 +26,7 @@ import frc.robot.subsystems.CANdisSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralIntake;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -33,7 +34,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -49,6 +50,7 @@ public class RobotContainer {
     public final CoralIntake coralIntake = new CoralIntake();
     public final CANdisSubsystem candisSubsystem = new CANdisSubsystem();
     public final ClimbSubsystem climbSubsystem = new ClimbSubsystem(candisSubsystem.getClimbPosition());
+    public final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(candisSubsystem.getInsideCANdi());
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -96,10 +98,16 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        operator.a().onTrue(climbSubsystem.run(climbSubsystem::deploy));
-        operator.b().onTrue(climbSubsystem.run(climbSubsystem::retract));
-        
-        //Trigger ClimberUp = new Trigger(()->operator.getXButton());
+        // operator.a().onTrue(climbSubsystem.run(climbSubsystem::deploy));
+        // operator.b().onTrue(climbSubsystem.run(climbSubsystem::retract));
+        operator.rightBumper().whileTrue(coralIntake.run(coralIntake::intake).finallyDo(coralIntake::stop));
+        operator.rightBumper().whileTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(0.09), 0)));
+        operator.leftBumper().whileTrue(coralIntake.run(coralIntake::outtake).finallyDo(coralIntake::stop));
+        operator.a().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.07), 0)));
+        operator.x().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.07), 20.1)));
+        operator.y().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.07), 51.2)));
+        elevatorSubsystem.setDefaultCommand(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(0.25), 0)));
+        coralIntake.setDefaultCommand(coralIntake.run(coralIntake::hold).finallyDo(coralIntake::stop));
     }
 
     public Command getAutonomousCommand() {

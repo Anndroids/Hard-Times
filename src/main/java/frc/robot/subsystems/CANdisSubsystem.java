@@ -35,4 +35,8 @@ public class CANdisSubsystem extends SubsystemBase {
         return insideCANdi.getPWM2Position();
     }
 
+    public CANdi getInsideCANdi() {
+        return insideCANdi;
+    }
+
 }
