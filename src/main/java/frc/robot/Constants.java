@@ -2,22 +2,25 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.SlotConfigs;
 
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 
 public class Constants {
     
     public static class CoralIntakeConstants {
     
-        public static final int CORAL_INTAKE_MOTOR_ID = 11;
+        public static final int DEVICE_ID_CORAL_INTAKE = 6;
+        public static final int DEVICE_ID_CANRANGE = 18;
 
-        public static final AngularVelocity INTAKE_VELOCITY = RadiansPerSecond.of(5);
-        public static final AngularVelocity SCORE_VELOCITY = RadiansPerSecond.of(-5);
-        public static final AngularVelocity HOLD_VELOCITY = RadiansPerSecond.of(5);
-        public static final AngularVelocity OUTTAKE_VELOCITY = RadiansPerSecond.of(-5);
+        public static final Voltage INTAKE_VOLTAGE = Volts.of(4.0);
+        public static final Voltage SCORE_VOLTAGE = Volts.of(-4.0);
+        public static final Voltage HOLD_VOLTAGE = Volts.of(1.0);
+        public static final Voltage OUTTAKE_VOLTAGE = Volts.of(-4.0);
         
     }
 
@@ -27,7 +30,7 @@ public class Constants {
         public static final int DEVICE_ID_ELEVATOR_MOTOR_FOLLOWER = 13;
         public static final int DEVICE_ID_ELEVATOR_CANDI = 17;
         public static final int DEVICE_ID_ARM_CANDI = 0;
-        public static final int DEVICE_ID_ARM_MOTOR = 0;
+        public static final int DEVICE_ID_ARM_MOTOR = 13;
         public static final DistanceUnit ELEVATOR_BASE_HEIGHT = (Meters);
         public static final DistanceUnit ELEVATOR_DEFAULT_HEIGHT = (Meters);
         public static final int LEVEL_1_HEIGHT = 2;
@@ -54,12 +57,27 @@ public class Constants {
         public static final int ELEVATOR_POSITION_TOLERANCE = 9;
         public static final int ARM_POSITION_TOLERANCE = 9;
     }
-    public static class AlgaeIntakeConstants {
-            public static final int ALGAE_INTAKE_MOTOR_ID = 6;
-    
-            public static final AngularVelocity INWARD_VELOCITY = RadiansPerSecond.of(5);
-            public static final AngularVelocity POINT_VELOCITY = RadiansPerSecond.of(-5);
-            public static final AngularVelocity STOP_VELOCITY = RadiansPerSecond.of(5);
-            public static final AngularVelocity SPIT_VELOCITY = RadiansPerSecond.of(-5);
+
+    public static class CANdiConstants {
+
+        public static final int DEVICE_ID_INSIDE_CANDI = 19;
+        public static final int DEVICE_ID_OUTSIDE_CANDI = 20;
+
     }
+    
+    public static class ClimbConstants {
+
+        public static final int DEVICE_ID_CLIMB_LEADER = 2;
+        public static final int DEVICE_ID_CLIMB_FOLLOWER = 5;
+
+        public static final double CLIMB_GEAR_RATIO = 120.0;
+
+        public static final double FORWARD_LIMIT_CLIMB = 0.511 * CLIMB_GEAR_RATIO;
+        public static final double REVERSE_LIMIT_CLIMB = 0.005 * CLIMB_GEAR_RATIO;
+
+        public static final Voltage CLIMB_DEPLOY_VOLTAGE = Volts.of(4.0);
+        public static final Voltage CLIMB_RETRACT_VOLTAGE = Volts.of(-2.0);
+
+    }
+    
 }

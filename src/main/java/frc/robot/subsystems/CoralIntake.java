@@ -1,20 +1,27 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.CoralIntakeConstants.CORAL_INTAKE_MOTOR_ID;
-import static frc.robot.Constants.CoralIntakeConstants.HOLD_VELOCITY;
-import static frc.robot.Constants.CoralIntakeConstants.INTAKE_VELOCITY;
-import static frc.robot.Constants.CoralIntakeConstants.OUTTAKE_VELOCITY;
-import static frc.robot.Constants.CoralIntakeConstants.SCORE_VELOCITY;
+import static frc.robot.Constants.CoralIntakeConstants.DEVICE_ID_CANRANGE;
+import static frc.robot.Constants.CoralIntakeConstants.DEVICE_ID_CORAL_INTAKE;
+import static frc.robot.Constants.CoralIntakeConstants.HOLD_VOLTAGE;
+import static frc.robot.Constants.CoralIntakeConstants.INTAKE_VOLTAGE;
+import static frc.robot.Constants.CoralIntakeConstants.OUTTAKE_VOLTAGE;
+import static frc.robot.Constants.CoralIntakeConstants.SCORE_VOLTAGE;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -23,9 +30,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 
 public class CoralIntake extends SubsystemBase {
 
-    private TalonFX coralIntakeMotor = new TalonFX(CORAL_INTAKE_MOTOR_ID);
+    private TalonFX coralIntakeMotor = new TalonFX(DEVICE_ID_CORAL_INTAKE);
+    private CANrange canRange = new CANrange(DEVICE_ID_CANRANGE);
 
-    private VelocityVoltage coralIntakeControl = new VelocityVoltage(0.0);
+    private VoltageOut coralIntakeControl = new VoltageOut(0.0);
     private VoltageOut sysIdControl = new VoltageOut(0.0);
     
 
@@ -35,9 +43,16 @@ public class CoralIntake extends SubsystemBase {
 
     public CoralIntake() {
         var coralIntakeConfig = new TalonFXConfiguration();
-        coralIntakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        coralIntakeConfig.MotorOutput
+                .withNeutralMode(NeutralModeValue.Brake)
+                .withInverted(InvertedValue.CounterClockwise_Positive);
 
         coralIntakeMotor.getConfigurator().apply(coralIntakeConfig);
+
+        var canRangeConfig = new CANrangeConfiguration();
+        canRangeConfig.ProximityParams.withProximityThreshold(Meters.of(0.22));
+
+        canRange.getConfigurator().apply(canRangeConfig);
     }
 
     public Command sysIdCoralIntakeDynamicCommand(Direction direction) {
@@ -49,11 +64,11 @@ public class CoralIntake extends SubsystemBase {
     }
 
     public void intake() {
-        runCoralIntake(INTAKE_VELOCITY);
+        runCoralIntake(INTAKE_VOLTAGE);
     }
 
     public void hold() {
-        runCoralIntake(HOLD_VELOCITY);
+        runCoralIntake(HOLD_VOLTAGE);
     }
 
     public void stop() {
@@ -61,15 +76,15 @@ public class CoralIntake extends SubsystemBase {
     }
 
     public void score() {
-        runCoralIntake(SCORE_VELOCITY);
+        runCoralIntake(SCORE_VOLTAGE);
     }
 
     public void outtake() {
-        runCoralIntake(OUTTAKE_VELOCITY);
+        runCoralIntake(OUTTAKE_VOLTAGE);
     }
 
-    private void runCoralIntake(AngularVelocity velocity) {
-        coralIntakeMotor.setControl(coralIntakeControl.withVelocity(velocity));
+    private void runCoralIntake(Voltage voltage) {
+        coralIntakeMotor.setControl(coralIntakeControl.withOutput(voltage));
     }
 
 }
