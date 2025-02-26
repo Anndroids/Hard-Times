@@ -104,6 +104,7 @@ public class RobotContainer {
         // operator.b().onTrue(climbSubsystem.run(climbSubsystem::retract));
         operator.rightBumper().whileTrue(coralIntake.run(coralIntake::intake).finallyDo(coralIntake::stop));
         operator.rightBumper().whileTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(0.09), 0)));
+        operator.pov(90).whileTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(0.09), 0)));
         operator.leftBumper().whileTrue(coralIntake.run(coralIntake::outtake).finallyDo(coralIntake::stop));
         operator.a().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.07), 0)));
         operator.x().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.07), 20.1)));
