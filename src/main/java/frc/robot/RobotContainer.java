@@ -54,9 +54,11 @@ public class RobotContainer {
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
+    private final AutoCommands autoCommands = new AutoCommands(drivetrain, candisSubsystem, coralIntake, elevatorSubsystem);
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        autoCommands.registerPPNamedCommands();
+        autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
@@ -105,7 +107,8 @@ public class RobotContainer {
         operator.leftBumper().whileTrue(coralIntake.run(coralIntake::outtake).finallyDo(coralIntake::stop));
         operator.a().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.07), 0)));
         operator.x().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.07), 20.1)));
-        operator.y().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.07), 51.2)));
+        operator.y().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.05), 51.2)));
+        operator.b().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.23), 0)));
         elevatorSubsystem.setDefaultCommand(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(0.25), 0)));
         coralIntake.setDefaultCommand(coralIntake.run(coralIntake::hold).finallyDo(coralIntake::stop));
     }

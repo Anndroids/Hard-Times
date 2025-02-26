@@ -2,11 +2,13 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.SlotConfigs;
 
 import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 
@@ -35,6 +37,19 @@ public class Constants {
 
         public static final double ELEVATOR_KP = 1.0;
         public static final double ELEVATOR_KG = 0.15;
+
+        public static final double ELEVATOR_L1_POSITION = 0;
+        public static final Angle CORAL_POSITION_L1_POSITION = Rotations.of(-0.07);
+        public static final double ELEVATOR_L2_POSITION = 20.1;
+        public static final Angle CORAL_POSITION_L2_POSITION = Rotations.of(-0.07);
+        public static final double ELEVATOR_L3_POSITION = 51.2;
+        public static final Angle CORAL_POSITION_L3_POSITION = Rotations.of(-0.07);
+        public static final double ELEVATOR_INTAKE_POSITION = 0;
+        public static final Angle CORAL_POSITION_INTAKE_POSITION = Rotations.of(0.09);
+        public static final double ELEVATOR_STOW_UP_POSITION = 0;
+        public static final Angle CORAL_POSITION_STOW_UP_POSITION = Rotations.of(0.25);
+        public static final double ELEVATOR_STOW_DOWN_POSITION = 0;
+        public static final Angle CORAL_POSITION_STOW_DOWN_POSITION = Rotations.of(-0.23);
     }
 
     public static class CANdiConstants {
