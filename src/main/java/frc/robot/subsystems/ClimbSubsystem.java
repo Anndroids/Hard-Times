@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.ClimbConstants.CLIMB_DEPLOY_VOLTAGE;
 import static frc.robot.Constants.ClimbConstants.CLIMB_GEAR_RATIO;
 import static frc.robot.Constants.ClimbConstants.CLIMB_RETRACT_VOLTAGE;
@@ -65,6 +66,10 @@ public class ClimbSubsystem extends SubsystemBase {
 
     public void retract() {
         climbVoltage.withOutput(CLIMB_RETRACT_VOLTAGE);
+    }
+
+    public void stop() {
+        climbVoltage.withOutput(Volts.of(0));
     }
 
     @Override

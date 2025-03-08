@@ -11,6 +11,7 @@ import static frc.robot.Constants.CoralIntakeConstants.OUTTAKE_VOLTAGE;
 import static frc.robot.Constants.CoralIntakeConstants.SCORE_VOLTAGE;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -33,10 +34,10 @@ public class CoralIntake extends SubsystemBase {
 
     private TalonFX coralIntakeMotor = new TalonFX(DEVICE_ID_CORAL_INTAKE);
     private CANrange canRange = new CANrange(DEVICE_ID_CANRANGE);
+    private StatusSignal<Boolean> hasCoral = canRange.getIsDetected();
 
     private VoltageOut coralIntakeControl = new VoltageOut(0.0);
-    private VoltageOut sysIdControl = new VoltageOut(0.0);
-    
+    private VoltageOut sysIdControl = new VoltageOut(0.0);    
 
     private SysIdRoutine coralIntakeSysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(null, null, null, state -> SignalLogger.writeString("State", state.toString())),
@@ -86,6 +87,11 @@ public class CoralIntake extends SubsystemBase {
 
     public void outtake() {
         runCoralIntake(OUTTAKE_VOLTAGE);
+    }
+
+    public boolean hasCoral() {
+        hasCoral.refresh();
+        return hasCoral.getValue();
     }
 
     private void runCoralIntake(Voltage voltage) {

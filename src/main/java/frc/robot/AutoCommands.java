@@ -1,9 +1,11 @@
 package frc.robot;
 
+import static frc.robot.Constants.ElevatorConstants.CORAL_POSITION_INTAKE_POSITION;
 import static frc.robot.Constants.ElevatorConstants.CORAL_POSITION_L1_POSITION;
 import static frc.robot.Constants.ElevatorConstants.CORAL_POSITION_L2_POSITION;
 import static frc.robot.Constants.ElevatorConstants.CORAL_POSITION_L3_POSITION;
 import static frc.robot.Constants.ElevatorConstants.CORAL_POSITION_STOW_DOWN_POSITION;
+import static frc.robot.Constants.ElevatorConstants.ELEVATOR_INTAKE_POSITION;
 import static frc.robot.Constants.ElevatorConstants.ELEVATOR_L1_POSITION;
 import static frc.robot.Constants.ElevatorConstants.ELEVATOR_L2_POSITION;
 import static frc.robot.Constants.ElevatorConstants.ELEVATOR_L3_POSITION;
@@ -42,18 +44,23 @@ public class AutoCommands {
         NamedCommands.registerCommand("CoralIntake", coralIntake());
         NamedCommands.registerCommand("ElevatorL3", elevatorToL3());
         NamedCommands.registerCommand("ElevatorL2", elevatorToL2());
+        NamedCommands.registerCommand("ElevatorIntake", elevatorToIntake());
     }
 
     public Command coralOuttake() {
-        return coralIntake.run(() -> coralIntake.run(coralIntake::outtake).finallyDo(coralIntake::stop));
+        return coralIntake.run(coralIntake::outtake).withTimeout(0.5).finallyDo(coralIntake::stop);
     }
 
     public Command coralIntake() {
-        return coralIntake.run(() -> coralIntake.run(coralIntake::intake).finallyDo(coralIntake::stop));
+        return coralIntake.run(coralIntake::intake).until(coralIntake::hasCoral).finallyDo(coralIntake::stop);
     }
 
     public Command coralStow() {
-        return coralIntake.run(() -> elevatorSubsystem.goToPosition(CORAL_POSITION_STOW_DOWN_POSITION, ELEVATOR_L1_POSITION));
+        return elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(CORAL_POSITION_STOW_DOWN_POSITION, ELEVATOR_L1_POSITION));
+    }
+
+    public Command elevatorToIntake() {
+        return elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(CORAL_POSITION_INTAKE_POSITION, ELEVATOR_INTAKE_POSITION));
     }
 
     public Command elevatorToL1() {
