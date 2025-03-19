@@ -81,12 +81,12 @@ public class RobotContainer {
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
 
-        joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(0.5).withVelocityY(0))
-        );
-        joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(-0.5).withVelocityY(0))
-        );
+       // joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
+            //forwardStraight.withVelocityX(0.5).withVelocityY(0))
+        //);
+        //joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
+            //forwardStraight.withVelocityX(-0.5).withVelocityY(0))
+        //);
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -100,8 +100,8 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        operator.leftStick().whileTrue(climbSubsystem.run(climbSubsystem::deploy).finallyDo(climbSubsystem::stop));
-        operator.rightStick().whileTrue(climbSubsystem.run(climbSubsystem::retract).finallyDo(climbSubsystem::stop));
+        operator.rightTrigger().whileTrue(climbSubsystem.run(climbSubsystem::deploy).finallyDo(climbSubsystem::stop));
+        operator.leftTrigger().whileTrue(climbSubsystem.run(climbSubsystem::retract).finallyDo(climbSubsystem::stop));
         //operator.rightTrigger().whileTrue(coralIntake.run(coralIntake::intake).finallyDo(coralIntake::stop));
         operator.rightBumper().whileTrue(coralIntake.run(coralIntake::intake).finallyDo(coralIntake::stop));
         operator.rightBumper().whileTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(0.09), 0)));

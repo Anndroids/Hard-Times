@@ -5,32 +5,25 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Copy of PATH 2"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "CoralOuttake"
-                      }
-                    }
-                  ]
+                  "pathName": "Red 1"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "ElevatorL2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralOuttake"
                 }
               }
             ]
@@ -43,19 +36,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "New New Path"
+                  "pathName": "Red 2"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "CoralIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ElevatorIntake"
                 }
               }
             ]
