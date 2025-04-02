@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.events.TriggerEvent;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,6 +47,10 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final CommandXboxController operator = new CommandXboxController(1);
 
+    private final MedianFilter joystickLeftYFilter = new MedianFilter(10);
+    private final MedianFilter joystickLeftXFilter = new MedianFilter(10);
+    private final MedianFilter joystickRightXFilter = new MedianFilter(10);
+
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final CoralIntake coralIntake = new CoralIntake();
     public final CANdisSubsystem candisSubsystem = new CANdisSubsystem();
@@ -70,9 +75,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(joystickLeftYFilter.calculate(-joystick.getLeftY() * MaxSpeed)) // Drive forward with negative Y (forward)
+                    .withVelocityY(joystickLeftXFilter.calculate(-joystick.getLeftX() * MaxSpeed)) // Drive left with negative X (left)
+                    .withRotationalRate(joystickRightXFilter.calculate(-joystick.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -96,12 +101,14 @@ public class RobotContainer {
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        joystick.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        joystick.back().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
         operator.rightTrigger().whileTrue(climbSubsystem.run(climbSubsystem::deploy).finallyDo(climbSubsystem::stop));
+        operator.rightTrigger().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.07), 0)));
         operator.leftTrigger().whileTrue(climbSubsystem.run(climbSubsystem::retract).finallyDo(climbSubsystem::stop));
+        operator.leftTrigger().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.07), 0)));
         //operator.rightTrigger().whileTrue(coralIntake.run(coralIntake::intake).finallyDo(coralIntake::stop));
         operator.rightBumper().whileTrue(coralIntake.run(coralIntake::intake).finallyDo(coralIntake::stop));
         operator.rightBumper().whileTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(0.09), 0)));
@@ -111,7 +118,7 @@ public class RobotContainer {
         operator.x().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.07), 20.1)));
         operator.y().onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.05), 51.2)));
         operator.b().and(() -> !coralIntake.hasCoral()).onTrue(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(-0.23), 0)));
-        elevatorSubsystem.setDefaultCommand(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(0.25), 0)));
+        elevatorSubsystem.setDefaultCommand(elevatorSubsystem.run(() -> elevatorSubsystem.goToPosition(Rotations.of(0.187), 0)));
         coralIntake.setDefaultCommand(coralIntake.run(coralIntake::hold).finallyDo(coralIntake::stop));
     }
 

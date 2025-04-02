@@ -44,10 +44,15 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .withKP(CORAL_POSITION_KP)
                 .withKG(CORAL_POSITION_KG);
         coralPositionConfiguration.ClosedLoopGeneral
-                .withContinuousWrap(true);
+                .withContinuousWrap(false);
         coralPositionConfiguration.MotionMagic
                 .withMotionMagicAcceleration(10)
                 .withMotionMagicCruiseVelocity(1.5);
+        coralPositionConfiguration.SoftwareLimitSwitch
+                .withForwardSoftLimitEnable(true)
+                .withForwardSoftLimitThreshold(0.251)
+                .withReverseSoftLimitEnable(true)
+                .withReverseSoftLimitThreshold(-0.251);
         coralPosition.getConfigurator().apply(coralPositionConfiguration);
 
         var elevatorConfiguration = new TalonFXConfiguration();
